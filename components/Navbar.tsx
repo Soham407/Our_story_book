@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, Menu, X } from 'lucide-react';
+import { BookOpen, Menu, X, User } from 'lucide-react';
 import Button from './Button';
 import { AppRoutes } from '../types';
 
@@ -20,11 +20,11 @@ const Navbar: React.FC = () => {
   const navLinks = [
     { name: 'How it Works', href: '#how-it-works' },
     { name: 'Showcase', href: '#showcase' },
-    { name: 'Pricing', href: '#pricing' },
+    { name: 'Library', path: AppRoutes.DASHBOARD },
   ];
 
   // Hide nav links on flow pages to reduce distraction
-  const isFlowPage = [AppRoutes.DIRECTOR, AppRoutes.EDITOR, AppRoutes.PREVIEW].includes(location.pathname as AppRoutes);
+  const isFlowPage = [AppRoutes.DIRECTOR, AppRoutes.EDITOR, AppRoutes.PREVIEW, AppRoutes.CHECKOUT].includes(location.pathname as AppRoutes);
 
   return (
     <nav 
@@ -47,14 +47,29 @@ const Navbar: React.FC = () => {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           {!isFlowPage && navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 transition-colors"
-            >
-              {link.name}
-            </a>
+            link.path ? (
+               <Link 
+                key={link.name}
+                to={link.path}
+                className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 transition-colors"
+               >
+                 {link.name}
+               </Link>
+            ) : (
+                <a 
+                key={link.name} 
+                href={link.href}
+                className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 transition-colors"
+                >
+                {link.name}
+                </a>
+            )
           ))}
+          
+          <Link to={AppRoutes.LOGIN} className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 flex items-center gap-1">
+             <User size={16} /> Sign In
+          </Link>
+          
           <Link to={AppRoutes.HOME}>
             <Button size="sm" variant={isScrolled ? 'primary' : 'primary'} className={!isScrolled ? "shadow-xl shadow-emerald-900/10" : ""}>
               Create Story
@@ -72,17 +87,29 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 bg-stone-50 flex flex-col items-center justify-center space-y-8 md:hidden animate-fade-in">
+          <div className="fixed inset-0 bg-stone-50 flex flex-col items-center justify-center space-y-8 md:hidden animate-fade-in z-40">
             {!isFlowPage && navLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href}
-                className="text-2xl font-serif text-emerald-950"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.name}
-              </a>
+               link.path ? (
+                   <Link
+                      key={link.name}
+                      to={link.path}
+                      className="text-2xl font-serif text-emerald-950"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                   >
+                       {link.name}
+                   </Link>
+               ) : (
+                  <a 
+                    key={link.name} 
+                    href={link.href}
+                    className="text-2xl font-serif text-emerald-950"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+               )
             ))}
+             <Link to={AppRoutes.LOGIN} onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-serif text-emerald-950">Sign In</Link>
              <Link to={AppRoutes.HOME} onClick={() => setIsMobileMenuOpen(false)}>
                 <Button size="lg">Create Story</Button>
             </Link>
