@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Wand2, Book, Heart, Star, ShieldCheck, Truck } from 'lucide-react';
 import MagicUploader from '../components/MagicUploader';
+import { useLocation } from 'react-router-dom';
 
 const LandingPage: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // If there is a hash in the URL (e.g. #how-it-works), scroll to it
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // Small delay to ensure page render
+      }
+    }
+  }, [location]);
+
   return (
     <div className="space-y-32 pb-20">
       {/* Hero Section */}

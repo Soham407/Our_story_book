@@ -23,8 +23,23 @@ const Navbar: React.FC = () => {
     { name: 'Library', path: AppRoutes.DASHBOARD },
   ];
 
-  // Hide nav links on flow pages to reduce distraction
-  const isFlowPage = [AppRoutes.DIRECTOR, AppRoutes.EDITOR, AppRoutes.PREVIEW, AppRoutes.CHECKOUT].includes(location.pathname as AppRoutes);
+  // Hide nav links on flow pages to reduce distraction. 
+  // We check if the current path starts with any of the flow paths to handle nested routes like /checkout/success
+  const isFlowPage = [AppRoutes.DIRECTOR, AppRoutes.EDITOR, AppRoutes.PREVIEW, AppRoutes.CHECKOUT].some(route => 
+    location.pathname.startsWith(route) && location.pathname !== AppRoutes.ORDER_SUCCESS
+  );
+
+  const handleAnchorClick = (e: React.MouseEvent, href: string) => {
+    if (location.pathname === AppRoutes.HOME) {
+      e.preventDefault();
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', href);
+      }
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   return (
     <nav 
@@ -46,25 +61,43 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
-          {!isFlowPage && navLinks.map((link) => (
-            link.path ? (
-               <Link 
-                key={link.name}
-                to={link.path}
-                className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 transition-colors"
-               >
-                 {link.name}
-               </Link>
-            ) : (
+          {!isFlowPage && navLinks.map((link) => {
+             // Handle standard routes
+             if (link.path) {
+               return (
+                 <Link 
+                   key={link.name}
+                   to={link.path}
+                   className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 transition-colors"
+                 >
+                   {link.name}
+                 </Link>
+               );
+             }
+             
+             // Handle anchor links
+             const isHome = location.pathname === AppRoutes.HOME;
+             const target = isHome ? (link.href || '#') : `${AppRoutes.HOME}${link.href}`;
+             
+             return isHome ? (
                 <a 
-                key={link.name} 
-                href={link.href}
-                className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 transition-colors"
+                  key={link.name} 
+                  href={link.href}
+                  onClick={(e) => handleAnchorClick(e, link.href || '#')}
+                  className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 transition-colors cursor-pointer"
                 >
-                {link.name}
+                  {link.name}
                 </a>
-            )
-          ))}
+             ) : (
+                <Link
+                   key={link.name}
+                   to={target}
+                   className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 transition-colors"
+                >
+                   {link.name}
+                </Link>
+             );
+          })}
           
           <Link to={AppRoutes.LOGIN} className="text-sm font-medium text-emerald-950/80 hover:text-emerald-950 flex items-center gap-1">
              <User size={16} /> Sign In
@@ -88,8 +121,9 @@ const Navbar: React.FC = () => {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="fixed inset-0 bg-stone-50 flex flex-col items-center justify-center space-y-8 md:hidden animate-fade-in z-40">
-            {!isFlowPage && navLinks.map((link) => (
-               link.path ? (
+            {!isFlowPage && navLinks.map((link) => {
+              if (link.path) {
+                return (
                    <Link
                       key={link.name}
                       to={link.path}
@@ -98,17 +132,32 @@ const Navbar: React.FC = () => {
                    >
                        {link.name}
                    </Link>
-               ) : (
+                );
+              }
+
+              const isHome = location.pathname === AppRoutes.HOME;
+              const target = isHome ? (link.href || '#') : `${AppRoutes.HOME}${link.href}`;
+
+              return isHome ? (
                   <a 
                     key={link.name} 
                     href={link.href}
+                    className="text-2xl font-serif text-emerald-950 cursor-pointer"
+                    onClick={(e) => handleAnchorClick(e, link.href || '#')}
+                  >
+                    {link.name}
+                  </a>
+              ) : (
+                  <Link
+                    key={link.name}
+                    to={target}
                     className="text-2xl font-serif text-emerald-950"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.name}
-                  </a>
-               )
-            ))}
+                  </Link>
+              );
+            })}
              <Link to={AppRoutes.LOGIN} onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-serif text-emerald-950">Sign In</Link>
              <Link to={AppRoutes.HOME} onClick={() => setIsMobileMenuOpen(false)}>
                 <Button size="lg">Create Story</Button>

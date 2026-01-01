@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Clock, Package, Edit2, StickyNote } from 'lucide-react';
+import { Plus, Clock, Package, Edit2, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AppRoutes, Book } from '../../types';
 import Button from '../../components/Button';
@@ -33,7 +33,7 @@ const Bookshelf: React.FC = () => {
              <Button 
                 variant="outline" 
                 onClick={() => setIsMemoryJarOpen(true)}
-                icon={<StickyNote size={18} />}
+                icon={<FileText size={18} />}
              >
                 Add Memory
              </Button>

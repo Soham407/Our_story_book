@@ -9,6 +9,9 @@ import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
 import Bookshelf from './pages/Dashboard/Bookshelf';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
+import OrderSuccess from './pages/Checkout/OrderSuccess';
+import Settings from './pages/Profile/Settings';
+import NotFound from './pages/NotFound';
 import { AppRoutes } from './types';
 
 function App() {
@@ -24,6 +27,9 @@ function App() {
           <Route path={AppRoutes.SIGNUP} element={<Signup />} />
           <Route path={AppRoutes.DASHBOARD} element={<Bookshelf />} />
           <Route path={AppRoutes.CHECKOUT} element={<CheckoutPage />} />
+          <Route path={AppRoutes.ORDER_SUCCESS} element={<OrderSuccess />} />
+          <Route path={AppRoutes.PROFILE} element={<Settings />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
     </Router>

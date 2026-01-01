@@ -19,6 +19,8 @@ export enum AppRoutes {
   SIGNUP = '/auth/signup',
   DASHBOARD = '/dashboard',
   CHECKOUT = '/checkout',
+  ORDER_SUCCESS = '/checkout/success',
+  PROFILE = '/profile',
 }
 
 export interface ThemeOption {
